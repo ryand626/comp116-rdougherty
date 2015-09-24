@@ -101,15 +101,16 @@
 	
 	I used 
 	
-	'''
+	```
 	ettercap -Tq -L set3 -r set3.pcap
-	'''
+	```
 	
 	To get the set3.eci file and then
 	
-	'''
+	```
 	etterlog --text set3.eci | grep -A 1 '^[ *$]IP address' | grep -B 1 '^[ *$]Host' > set3IPs.txt
-	'''
+	```
+	
 	to parse out the IP addresses with host names
 
 	IP address   : 17.134.62.236 
