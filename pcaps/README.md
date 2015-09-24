@@ -42,27 +42,33 @@ One is legitimate.
 	## Set 3
 
 15. How many plaintext username-password pairs are there in this packet set? Please count any anonymous or generic accounts.  
-3. 2 aren't actual accounts, one is legitimate.  
+Three. Two aren't actual accounts, one is legitimate.  
 	
 	###Real
 
-IMAP  
-USER: nab01620@nifty.com PASS: Nifty->takirin1  
-From: 210.131.4.55:143  
+	IMAP  
+	USER: nab01620@nifty.com PASS: Nifty->takirin1  
+	From: 210.131.4.55:143  
 	
 	###Fake
 
-USER: seymore PASS: butts INFO: forum.defcon.org/login.php?user=seymore&password=butts  
-From: 162.222.171.208:80  
-USER: jeff PASS: asdasdasd INFO: ec2.intelctf.com/C  
-From: 54.191.109.23:80  
+	USER: seymore PASS: butts INFO: forum.defcon.org/login.php?user=seymore&password=butts  
+	From: 162.222.171.208:80  
+
+	USER: jeff PASS: asdasdasd INFO: ec2.intelctf.com/C  
+	From: 54.191.109.23:80  
+
 16. For each of the plaintext username-password pair that you found, identify the protocol used, server IP, the corresponding domain name (e.g., google.com), and port number.  
-USER: nab01620@nifty.com PASS: Nifty->takirin1  
-PROTOCOL: IMAP, IP: 210.131.4.55, PORT: 143  
-USER: seymore PASS: butts   
-PROTOCOL: HTTP, IP: 162.222.171.208, DOMAIN: forum.defcon.org/login.php?user=seymore&password=butts PORT: 80  
-USER: jeff PASS: asdasdasd  
-PROTOCOL: HTTP, IP: 54.191.109.23, DOMAIN: ec2.intelctf.com/C, PORT: 80  
+
+	USER: nab01620@nifty.com PASS: Nifty->takirin1  
+	PROTOCOL: IMAP, IP: 210.131.4.55, PORT: 143  
+
+	USER: seymore PASS: butts  
+	PROTOCOL: HTTP, IP: 162.222.171.208, DOMAIN: forum.defcon.org/login.php?user=seymore&password=butts PORT: 80  
+
+	USER: jeff PASS: asdasdasd  
+	PROTOCOL: HTTP, IP: 54.191.109.23, DOMAIN: ec2.intelctf.com/C, PORT: 80  
+
 17. Of all the plaintext username-password pairs that you found, how many of them are legitimate? That is, the username-password was valid, access successfully granted? Please do not count any anonymous or generic accounts.  
 1  
 18. Provide a listing of all IP addresses with corresponding hosts (hostname + domain name) that are in this PCAP set. Describe your methodology.  
@@ -71,7 +77,7 @@ I used ettercaps to get these
 ec2.intelctf.com/C  
 
 	## General Questions
-	
+
 19. How did you verify the successful username-password pairs?  
 By looking at what the server did after the username/password were given.  If the password was legitimate, the server responded with actual data, otherwise it refused or did nothing.  
 20. What advice would you give to the owners of the username-password pairs that you found so their account information would not be revealed "in-the-clear" in the future?  
