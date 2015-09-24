@@ -113,6 +113,8 @@
 
 	to parse out the IP addresses with host names
 
+	IP Address | Hostname
+	--- | ---
 	IP address   : 17.134.62.236 | Hostname     : gs-loc.apple.com  
 	IP address   : 17.134.126.211 | Hostname     : gs-loc.apple.com  
 	IP address   : 17.134.126.213 | Hostname     : gs-loc.apple.com  
