@@ -2,6 +2,7 @@
 An incident alarm that searches for exploits in a live scan of a network or from an access log.
 
 Usage
+
 Command | Result
 ---|---
 `sudo ./alarm.rb` | When an exploit is detected `#{incident_number}. ALERT: #{incident} is detected from #{source IP address} (#{protocol}) (#{payload})!` is printed to the console
