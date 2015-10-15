@@ -4,30 +4,49 @@ require 'packetfu'
 include PacketFu
 
 $incident_number = 0;
-$incident = "dogs"
-$source = "1.3.5.6"
-$protocol = "TCP"
-$payload = "Binary data"
+$incident = ""
+$source = ""
+$protocol = ""
+$payload = ""
 
 iface = "en0"
 
-def checkStream(line)
-	if checkNull(line)
-		puts "NULL"
-	elsif checkFin(line)
-		puts "FIN"
-	elsif checkXMAS(line)
-		puts "XMAS"
-	elsif checkNikto(line)
-		puts "nikto"
-	elsif checkNmap(line)
-		puts("Nmap")
-	elsif checkCreditCard(line)
-		puts("Credit card leaked")
+# Stream Checking
+
+def checkStream(pkt)
+	errorDetected = false;
+	$incident = "test"
+
+	# Check TCP vulnerabilities
+	if pkt.proto.last == "TCP"
+		puts pkt.tcp_flags
+		if checkNull(pkt)
+			errorDetected = true
+			$incident = "NULL"
+		elsif checkFin(pkt)
+			errorDetected = true
+			$incident =  "FIN"
+		elsif checkXMAS(pkt)
+			errorDetected = true
+			$incident =  "XMAS"
+		end
 	else
-		puts "No issues detected"
+		if checkNikto(pkt)
+			errorDetected = true
+			$incident =  "nikto"
+		elsif checkNmap(pkt)
+			errorDetected = true
+			$incident = "Nmap"
+		elsif checkCreditCard(pkt)
+			errorDetected = true
+			$incident = "Credit card leaked"
+		end
 	end
-	# "#{$incident_number}. ALERT: #{$incident} is detected from #{$source} (#{$protocol}) (#{$payload})!"	
+
+	if errorDetected
+		puts "#{$incident_number}. ALERT: #{$incident} is detected from #{pkt.ip_saddr} (#{pkt.proto.last}) (#{pkt.payload})!"	
+		$incident_number = $incident_number + 1
+	end
 end
 
 def checkNull(line)
@@ -64,34 +83,36 @@ def checkXMAS(line)
 end
 
 def checkNmap(line)
-	return line =~ /\x4E\x6D\x61\x70/
+	return (line.ip_saddr =~ /\x4E\x6D\x61\x70/) || (line.payload =~ /\x4E\x6D\x61\x70/)
 end
 
 def checkNikto(line)
-	return line =~ /\x4E\x69\x6B\x74\x6F/
+	return (line.ip_saddr =~ /\x4E\x69\x6B\x74\x6F/) || (line.payload =~ /\x4E\x69\x6B\x74\x6F/)
 end
 
 def checkCreditCard(line)
 	ret = false;
-	if line ~= /4\d{3}(\s|-)?\d{4}(\s|-)?\d{4}(\s|-)?\d{4}/
+	if line =~ /4\d{3}(\s|-)?\d{4}(\s|-)?\d{4}(\s|-)?\d{4}/
 		ret = true
 		puts "VISA"
 	end
-	if line ~= /5\d{3}(\s|-)?\d{4}(\s|-)?\d{4}(\s|-)?\d{4}/
+	if line =~ /5\d{3}(\s|-)?\d{4}(\s|-)?\d{4}(\s|-)?\d{4}/
 		ret = true
 		puts "Mastercard"
 	end
-	if line ~= /6011(\s|-)?\d{4}(\s|-)?\d{4}(\s|-)?\d{4}/
+	if line =~ /6011(\s|-)?\d{4}(\s|-)?\d{4}(\s|-)?\d{4}/
 		ret = true
 		puts "Discover"
 	end
-	if line ~= /3\d{3}(\s|-)?\d{6}(\s|-)?\d{5}/
+	if line =~ /3\d{3}(\s|-)?\d{6}(\s|-)?\d{5}/
 		ret = true
 		puts "AMERICAN"
 	end
 	
 	return ret
 end
+
+# Log Checking
 
 def checkLog(line)
 	if checkLogShellShock(line)
@@ -107,7 +128,7 @@ def checkLog(line)
 	end
 end
 
-# TODO allow spaces
+
 def checkLogShellShock(line)
 	return line =~ /()\s*{\s*:;\s*};/
 end
@@ -155,14 +176,14 @@ else
 		# Check if it's an IP
 		if pkt.is_ip?
 			# skip if it's my IP
-			next if pkt.ip_saddr == Utils.ifconfig(iface)[:ip_saddr] 
+			# next if pkt.ip_saddr == Utils.ifconfig(iface)[:ip_saddr] 
 			
 			# Show basic packet information
-			packet_info = [pkt.ip_saddr, pkt.ip_daddr, pkt.size, pkt.proto.last]
-			puts "%-15s -> %-15s %-4d %s" % packet_info
+			# packet_info = [pkt.ip_saddr, pkt.ip_daddr, pkt.size, pkt.proto.last]
+			# if pkt.ip_saddr.to_s == "173.194.123.116"
+			# 	puts "%-15s -> %-15s %-4d %s" % packet_info	
+			# end
 			
-			# Check TCP vulnerabilities
-			next if pkt.proto.last != "TCP"
 			checkStream(pkt)
 	    end
 	end

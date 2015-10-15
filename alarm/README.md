@@ -4,7 +4,7 @@ An incident alarm that searches for exploits in a live scan of a network or from
 Command | Result
 ---|---
 `sudo ./alarm.rb` | Program listens on the local network. When an exploit is detected, it is printed to the console.
-`./alarm.rb -r LOGFILE.log` | Program reads in the specified LOGFILE.  When an exploit is detected, the program prints the exploit's information to the console
+`./alarm.rb -r <web_server_log>` | Program reads in the specified LOGFILE.  When an exploit is detected, the program prints the exploit's information to the console
 
 Exploit Information Message format:  
 `#{incident_number}. ALERT: #{incident} is detected from #{source IP address} (#{protocol}) (#{payload})!`
@@ -56,6 +56,7 @@ Anything that looks like shellcode.  | Searches for `\x` to look for anything in
 - Redoing work lost from VM crash: 4 hours. Lesson learned: figure out how to install VM in the future.
 - Lots of regex fun times: 3 hours
 - Testing 2 hours on and off
+- 1 hour of making the README look nice/tweaking
 
 ## Questions
 1. *Are the heuristics used in this assignment to determine incidents "even that good"?*    
