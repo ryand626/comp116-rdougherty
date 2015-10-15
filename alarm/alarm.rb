@@ -1,13 +1,18 @@
 #!/Users/Ryan/.rvm/rubies/ruby-2.1.1/bin/ruby
 
 require 'packetfu'
+require 'apachelogregex'
+
 include PacketFu
+include ApacheLogRegex
 
 $incident_number = 0;
 $incident = ""
 $source = ""
 $protocol = ""
 $payload = ""
+
+$parser
 
 iface = "en0"
 
@@ -19,7 +24,7 @@ def checkStream(pkt)
 
 	# Check TCP vulnerabilities
 	if pkt.proto.last == "TCP"
-		puts pkt.tcp_flags
+		# puts pkt.tcp_flags
 		if checkNull(pkt)
 			errorDetected = true
 			$incident = "NULL"
@@ -115,16 +120,27 @@ end
 # Log Checking
 
 def checkLog(line)
+	errorDetected = false
 	if checkLogShellShock(line)
-		puts "SHELL SHOCK"
+		errorDetected = true
+			$incident = "SHELL SHOCK"
 	elsif checkLogPhpMyAdmin(line)
-		puts "PHP"
+		errorDetected = true
+			$incident = "PHP"
 	elsif checkLogMasscan(line)
-		puts "MASSCAN"
+		errorDetected = true
+			$incident = "MASSCAN"
 	elsif checkLogShell(line)
-		puts "SHELL CODE"
+		errorDetected = true
+			$incident = "SHELL CODE"
 	elsif checkLogNmap(line)
-		puts "NMAP"
+		errorDetected = true
+			$incident = "NMAP"
+	end
+
+	if errorDetected
+		puts "#{$incident_number}. ALERT: #{$incident} is detected from #{pkt.ip_saddr} (#{pkt.proto.last}) (#{pkt.payload})!"	
+		$incident_number = $incident_number + 1
 	end
 end
 
@@ -156,6 +172,19 @@ end
 # Read Log
 if ARGV.length >= 2
 	puts ARGV[0],ARGV[1]
+
+	format = '%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"'
+	$parser = ApacheLogRegex.new(format)
+
+	File.readlines('/var/apache/access.log').collect do |line|
+	  begin
+	    parser.parse(line)
+	    # {"%r"=>"GET /blog/index.xml HTTP/1.1", "%h"=>"87.18.183.252", ... }
+	  rescue ApacheLogRegex::ParseError => e
+	    nil
+	  end
+	end
+
 	if ARGV[0] == '-r'
 		File.open(ARGV[1], "r") do |f|
 			f.each_line do |line|
@@ -167,7 +196,7 @@ if ARGV.length >= 2
 # Otherwise Read Stream
 else
 	stream = PacketFu::Capture.new(:start => true, :iface => iface, :promisc => true)
-	# stream.show_live()
+	stream.show_live()
 
 	# For every stream
 	stream.stream.each do |p|
@@ -175,7 +204,6 @@ else
 		pkt =  Packet.parse p
 		# Check if it's an IP
 		if pkt.is_ip?
-			# skip if it's my IP
 			# next if pkt.ip_saddr == Utils.ifconfig(iface)[:ip_saddr] 
 			
 			# Show basic packet information
