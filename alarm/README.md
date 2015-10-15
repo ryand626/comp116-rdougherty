@@ -13,6 +13,7 @@ Nikto scan | checks for the word nikto in hex with /\x4E\x69\x6B\x74\x6F/
 Credit card leak | checks a series of regular expressions for known credit card regex matches
 
 Credit card matching
+
 Regex | Carrier
 ---|---
 /4\d{3}(\s|-)?\d{4}(\s|-)?\d{4}(\s|-)?\d{4}/ | Visa
