@@ -8,8 +8,8 @@ Scan | Detection Algorithm
 NULL scan | checks if each tcp_flag is 0
 FIN scan | checks if each other tcp_flag is zero and FIN is 1
 Xmas scan | checks if each other tcp_flag is zero and URG PSH and FIN are 1
-Other Nmap scans | checks for the word nmap in hex with /\x4E\x6D\x61\x70/
-Nikto scan | checks for the word nikto in hex with /\x4E\x69\x6B\x74\x6F/
+Other Nmap scans | checks for the word nmap in hex with `/\x4E\x6D\x61\x70/`
+Nikto scan | checks for the word nikto in hex with `/\x4E\x69\x6B\x74\x6F/`
 Credit card leak | checks a series of regular expressions for known credit card regex matches
 
 Credit card matching
@@ -28,7 +28,7 @@ Scan | Detection Algorithm
 NMAP scan (of any variety) | Searches for the word nmap
 Nikto scan | searches for the word nikto
 Someone running Rob Graham's Masscan | searches for the word masscan
-Someone scanning for Shellshock vulnerability.  | searches for (){:;} with /()\s*{\s*:;\s*};/
+Someone scanning for Shellshock vulnerability.  | searches for () { :; } with `/()\s*{\s*:;\s*};/`
 Anything pertaining to phpMyAdmin | searches for phpmyadmin
 Anything that looks like shellcode.  | searches for \x
 
