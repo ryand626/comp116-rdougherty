@@ -25,9 +25,9 @@ Access Log Scan
 
 Scan | Detection Algorithm
 ---|---
-NMAP scan (of any variety) | Searches for the word nmap
-Nikto scan | searches for the word nikto
-Someone running Rob Graham's Masscan | searches for the word masscan
+NMAP scan (of any variety) | Searches for the word `"nmap"` in each line converted to lowercase using `.downcase` on each line
+Nikto scan | Searches for the word `"nikto"` in each line converted to lowercase using `.downcase` on each line
+Someone running Rob Graham's Masscan | Searches for the word `"masscan"` in each line converted to lowercase using `.downcase` on each line
 Someone scanning for Shellshock vulnerability.  | searches for `() { :; }` with `/()\s*{\s*:;\s*};/`
 Anything pertaining to phpMyAdmin | searches for phpmyadmin
 Anything that looks like shellcode.  | searches for \x
