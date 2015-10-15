@@ -28,7 +28,7 @@ Scan | Detection Algorithm
 NMAP scan (of any variety) | Searches for the word nmap
 Nikto scan | searches for the word nikto
 Someone running Rob Graham's Masscan | searches for the word masscan
-Someone scanning for Shellshock vulnerability.  | searches for () { :; } with `/()\s*{\s*:;\s*};/`
+Someone scanning for Shellshock vulnerability.  | searches for `() { :; }` with `/()\s*{\s*:;\s*};/`
 Anything pertaining to phpMyAdmin | searches for phpmyadmin
 Anything that looks like shellcode.  | searches for \x
 
