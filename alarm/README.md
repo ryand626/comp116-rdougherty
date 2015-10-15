@@ -45,8 +45,8 @@ Anything that looks like shellcode.  | Searches for `\x` to look for anything in
 - Testing 2 hours on and off
 
 ## Questions
-1. Are the heuristics used in this assignment to determine incidents "even that good"?    
+1. *Are the heuristics used in this assignment to determine incidents "even that good"?*    
 The heuristiscs are not even that good.  There's probably lots of edge cases and ways of getting around the detection if someone really wants to be sneaky.
 
-2. If you have spare time in the future, what would you add to the program or do differently with regards to detecting incidents?    
+2. *If you have spare time in the future, what would you add to the program or do differently with regards to detecting incidents?*    
 I'd probably put more research into incidents not specified by the assignment, and see if my program had any known flaws and address them.  I'd also try to see what edge cases there are for my existing scans and fix them.
