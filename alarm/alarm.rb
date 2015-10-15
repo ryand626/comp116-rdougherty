@@ -11,7 +11,7 @@ $payload = "Binary data"
 
 iface = "en0"
 
-def checkLine(line)
+def checkStream(line)
 	if checkNull(line)
 		puts "NULL"
 	elsif checkFin(line)
@@ -22,6 +22,8 @@ def checkLine(line)
 		puts "nikto"
 	elsif checkNmap(line)
 		puts("Nmap")
+	elsif checkCreditCard(line)
+		puts("Credit card leaked")
 	else
 		puts "No issues detected"
 	end
@@ -58,35 +60,76 @@ end
 
 def checkXMAS(line)
 	flags = line.tcp_flags
-	flags.each do |flag|
-		if flag == 0
-			return false
-		end
-		puts flag
-	end
-	return true
-end
-
-def checkNikto(line)
-	if line.payload.unpack('H*').to_s.downcase.include? "nikto"
-		return true
-	end
-	return false
+	return (flags[0] == 1) && (flags[2] == 1) && (flags[5] == 1) && (flags[1] == 0) && (flags[3] == 0) && (flags[4] == 0)
 end
 
 def checkNmap(line)
-	if line.payload.unpack('H*').to_s.downcase.include? "nmap"
-		return true
+	return line =~ /\x4E\x6D\x61\x70/
+end
+
+def checkNikto(line)
+	return line =~ /\x4E\x69\x6B\x74\x6F/
+end
+
+def checkCreditCard(line)
+	ret = false;
+	if line ~= /4\d{3}(\s|-)?\d{4}(\s|-)?\d{4}(\s|-)?\d{4}/
+		ret = true
+		puts "VISA"
 	end
-	return false
+	if line ~= /5\d{3}(\s|-)?\d{4}(\s|-)?\d{4}(\s|-)?\d{4}/
+		ret = true
+		puts "Mastercard"
+	end
+	if line ~= /6011(\s|-)?\d{4}(\s|-)?\d{4}(\s|-)?\d{4}/
+		ret = true
+		puts "Discover"
+	end
+	if line ~= /3\d{3}(\s|-)?\d{6}(\s|-)?\d{5}/
+		ret = true
+		puts "AMERICAN"
+	end
+	
+	return ret
 end
 
-def checkShell(line)
-	return line.include? "() { :; };"
+def checkLog(line)
+	if checkLogShellShock(line)
+		puts "SHELL SHOCK"
+	elsif checkLogPhpMyAdmin(line)
+		puts "PHP"
+	elsif checkLogMasscan(line)
+		puts "MASSCAN"
+	elsif checkLogShell(line)
+		puts "SHELL CODE"
+	elsif checkLogNmap(line)
+		puts "NMAP"
+	end
 end
 
-def checkPhpMyAdmin(line)
+# TODO allow spaces
+def checkLogShellShock(line)
+	return line =~ /()\s*{\s*:;\s*};/
+end
+
+def checkLogPhpMyAdmin(line)
 	return line.to_s.downcase.include? "phpmyadmin"
+end
+
+def checkLogMasscan(line)
+	return line.to_s.downcase.include? "masscan"
+end
+
+def checkLogShell(line)
+	return line.to_s.include? "\\x"
+end
+
+def checkLogNmap(line)
+	return line.to_s.downcase.include? "nmap"
+end
+
+def checkLogNikto(line)
+	return line.to_s.downcase.include? "nikto"
 end
 
 # Read Log
@@ -95,7 +138,7 @@ if ARGV.length >= 2
 	if ARGV[0] == '-r'
 		File.open(ARGV[1], "r") do |f|
 			f.each_line do |line|
-				puts line
+				checkLog(line)
 			end
 		end
 	end
@@ -120,7 +163,7 @@ else
 			
 			# Check TCP vulnerabilities
 			next if pkt.proto.last != "TCP"
-			checkLine(pkt)
+			checkStream(pkt)
 	    end
 	end
 end
