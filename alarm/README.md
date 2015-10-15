@@ -16,10 +16,10 @@ Credit card matching
 
 Regex | Carrier
 ---|---
-/4\d{3}(\s|-)?\d{4}(\s|-)?\d{4}(\s|-)?\d{4}/ | Visa
-/5\d{3}(\s|-)?\d{4}(\s|-)?\d{4}(\s|-)?\d{4}/ | MasterCard
-/6011(\s|-)?\d{4}(\s|-)?\d{4}(\s|-)?\d{4}/ | Discover
-/3\d{3}(\s|-)?\d{6}(\s|-)?\d{5}/ | American Express
+`/4\d{3}(\s|-)?\d{4}(\s|-)?\d{4}(\s|-)?\d{4}/` | Visa
+`/5\d{3}(\s|-)?\d{4}(\s|-)?\d{4}(\s|-)?\d{4}/` | MasterCard
+`/6011(\s|-)?\d{4}(\s|-)?\d{4}(\s|-)?\d{4}/`| Discover
+`/3\d{3}(\s|-)?\d{6}(\s|-)?\d{5}/` | American Express
 
 Access Log Scan
 
