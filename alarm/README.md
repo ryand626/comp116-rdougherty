@@ -3,6 +3,8 @@
 ## What Worked
 Live Scan
 
+Scan | Detection Algorithm
+---|---
 NULL scan | checks if each tcp_flag is 0
 FIN scan | checks if each other tcp_flag is zero and FIN is 1
 Xmas scan | checks if each other tcp_flag is zero and URG PSH and FIN are 1
@@ -12,7 +14,7 @@ Credit card leak | checks a series of regular expressions for known credit card 
 
 Access Log Scan
 
-Scan | Description
+Scan | Detection Algorithm
 ---|---
 NMAP scan (of any variety) | Searches for the word nmap
 Nikto scan | searches for the word nikto
