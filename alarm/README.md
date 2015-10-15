@@ -1,7 +1,7 @@
 # Incident Alarm
 
 ## What Worked
-Live Scan
+###Live Scan
 
 Scan | Detection Algorithm
 ---|---
@@ -12,7 +12,7 @@ Other Nmap scans | checks for the word nmap in hex with `/\x4E\x6D\x61\x70/`
 Nikto scan | checks for the word nikto in hex with `/\x4E\x69\x6B\x74\x6F/`
 Credit card leak | checks a series of regular expressions for known credit card regex matches
 
-Credit card matching
+**Credit card matching**
 
 Regex | Carrier
 ---|---
@@ -21,7 +21,7 @@ Regex | Carrier
 `/6011(\s|-)?\d{4}(\s|-)?\d{4}(\s|-)?\d{4}/`| Discover
 `/3\d{3}(\s|-)?\d{6}(\s|-)?\d{5}/` | American Express
 
-Access Log Scan
+###Access Log Scan
 
 Scan | Detection Algorithm
 ---|---
@@ -34,6 +34,7 @@ Anything that looks like shellcode.  | Searches for `\x` to look for anything in
 
 
 ## Still left
+- Output properly formatted messages
 - Some testing of live stream
 - Some log testing
 - PCAP output?
@@ -44,8 +45,8 @@ Anything that looks like shellcode.  | Searches for `\x` to look for anything in
 - Testing 2 hours on and off
 
 ## Questions
-1. Are the heuristics used in this assignment to determine incidents "even that good"?  
-Eh not really, there's probably lots of edge cases and ways of getting around the detection if someone really wants to be sneaky.
+1. Are the heuristics used in this assignment to determine incidents "even that good"?    
+The heuristiscs are not even that good.  There's probably lots of edge cases and ways of getting around the detection if someone really wants to be sneaky.
 
-2. If you have spare time in the future, what would you add to the program or do differently with regards to detecting incidents?  
-I'd probably put more research into incidents not specified by the assignment, and see if my program had any known flaws and address them.
+2. If you have spare time in the future, what would you add to the program or do differently with regards to detecting incidents?    
+I'd probably put more research into incidents not specified by the assignment, and see if my program had any known flaws and address them.  I'd also try to see what edge cases there are for my existing scans and fix them.
