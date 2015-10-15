@@ -5,7 +5,7 @@ Usage
 
 Command | Result
 ---|---
-`sudo ./alarm.rb` | When an exploit is detected  `#{incident_number}. ALERT: #{incident} is detected from #{source IP address} (#{protocol}) (#{payload})!`  is printed to the console
+`sudo ./alarm.rb` | When an exploit is detected <br> `#{incident_number}. ALERT: #{incident} is detected from #{source IP address} (#{protocol}) (#{payload})!` <br> is printed to the console
 `./alarm.rb -r LOGFILE.log` | When an exploit is detected the program prints  `#{incident_number}. ALERT: #{incident} is detected from #{source IP address} (#{protocol}) (#{payload})!`  to the console
 
 note change the first line of the program to your own ruby path or run with `ruby ./alarm.rb`
