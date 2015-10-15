@@ -5,10 +5,14 @@ Usage
 
 Command | Result
 ---|---
-`sudo ./alarm.rb` | When an exploit is detected <br> `#{incident_number}. ALERT: #{incident} is detected from #{source IP address} (#{protocol}) (#{payload})!` <br> is printed to the console
-`./alarm.rb -r LOGFILE.log` | When an exploit is detected the program prints  `#{incident_number}. ALERT: #{incident} is detected from #{source IP address} (#{protocol}) (#{payload})!`  to the console
+`sudo ./alarm.rb` | Program listens on the local network. When an exploit is detected, it is printed to the console.
+`./alarm.rb -r LOGFILE.log` | Program reads in the specified LOGFILE.  When an exploit is detected, the program prints the exploit's information to the console
 
-note change the first line of the program to your own ruby path or run with `ruby ./alarm.rb`
+Exploit Information Message format:
+`#{incident_number}. ALERT: #{incident} is detected from #{source IP address} (#{protocol}) (#{payload})!`
+
+
+**Note** change the first line of the program to your own ruby path or run with `ruby alarm.rb`
 
 ## What Worked
 ###Live Scan
