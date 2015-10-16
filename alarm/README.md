@@ -3,15 +3,12 @@ An incident alarm that searches for exploits in a live scan of a network or from
 
 Command | Result
 ---|---
-`sudo ./alarm.rb` | Program listens on the local network. When an exploit is detected, it is printed to the console.
-`./alarm.rb -r <web_server_log>` | Program reads in the specified LOGFILE.  When an exploit is detected, the program prints the exploit's information to the console
+`sudo ruby alarm.rb` | Program listens on the local network. When an exploit is detected, it is printed to the console.
+`ruby alarm.rb -r <web_server_log>` | Program reads in the specified LOGFILE.  When an exploit is detected, the program prints the exploit's information to the console
 
 Exploit Information Message format:  
 `#{incident_number}. ALERT: #{incident} is detected from #{source IP address} (#{protocol}) (#{payload})!`
 
-
-**Note**  
-Change the first line of the program to your own ruby path or run with `ruby alarm.rb`
 
 ## What Worked
 ###Live Scan
@@ -47,20 +44,17 @@ Anything that looks like shellcode.  | Searches for `\x` to look for anything in
 
 
 ## Still left
-- Output properly formatted messages
-- Some testing of live stream
-- Some log testing
-- PCAP output?
+- PCAP output
 
 ## Time
 - Redoing work lost from VM crash: 4 hours. Lesson learned: figure out how to install VM in the future.
-- Lots of regex fun times: 3 hours
+- Lots of regex fun times: 6 hours
 - Testing 2 hours on and off
 - 1 hour of making the README look nice/tweaking
 
 ## Questions
 1. *Are the heuristics used in this assignment to determine incidents "even that good"?*    
-The heuristiscs are not even that good.  There's probably lots of edge cases and ways of getting around the detection if someone really wants to be sneaky.
+The heuristiscs are *not* even that good.  There's probably lots of edge cases and ways of getting around the detection if someone really wants to be sneaky.  The nmap scans can be tricked if someone tries to hide the signature.
 
 2. *If you have spare time in the future, what would you add to the program or do differently with regards to detecting incidents?*    
 I'd probably put more research into incidents not specified by the assignment, and see if my program had any known flaws and address them.  I'd also try to see what edge cases there are for my existing scans and fix them.
