@@ -190,7 +190,7 @@ if ARGV.length >= 2
 # Otherwise Read Stream
 else
 	stream = PacketFu::Capture.new(:start => true, :iface => iface, :promisc => true)
-	stream.show_live()
+	# stream.show_live()
 
 	# For every stream
 	stream.stream.each do |p|
