@@ -42,9 +42,20 @@ $Input, you are doing a heckuvajob!
 
 1. What is/are the disk format(s) of the disk on the suspect's computing device?  
 
-2. Is there a phone carrier involved?
+There are multiple partitions.
 
-3. What operating system, including version number, is being used? Please elaborate how you determined this information.
+Unallocated
+Win95 FAT32 (0x0c)
+Linux (0x83)
+Unallocated
+
+2. Is there a phone carrier involved?  
+
+I'm going to go out on a limb and say yes?
+
+3. What operating system, including version number, is being used? Please elaborate how you determined this information.  
+
+Windows 95, and Linux Windows 95
 
 4. What applications are installed on the disk? Please elaborate how you determined this information.
 
@@ -61,3 +72,5 @@ $Input, you are doing a heckuvajob!
 10. Are there any encrypted files? If so, list the contents in the encrypted file and provide a brief description of how you decrypted the file.
 
 11. Who is the celebrity that the suspect has been stalking?
+
+Victor Espinoza and American Pharaoh
