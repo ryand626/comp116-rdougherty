@@ -21,6 +21,8 @@ do
 	steghide extract -sf a.jpg -p $line
 done
 ```
+And ran it with
+`sh stegdetect.sh < wordlist.txt`  
 
 We found out that there is no password. The program's name is `runme`.
 We modified it to be executable by using `chmod +x runme`. And then 
