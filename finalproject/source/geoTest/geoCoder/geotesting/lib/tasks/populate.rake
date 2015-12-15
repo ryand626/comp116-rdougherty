@@ -8,7 +8,8 @@ namespace :db do
       puts file
       File.open(file, "r") do |f|
         f.each_line do |line|
-          Location.create(address: line)
+          data = line.split(',')
+          Location.create(address: data[0], attack_type: data[1])
         end
       end
     end

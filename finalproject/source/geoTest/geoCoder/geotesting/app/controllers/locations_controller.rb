@@ -8,6 +8,7 @@ class LocationsController < ApplicationController
     @hash = Gmaps4rails.build_markers(@locations) do |user, marker|
       marker.lat user.latitude
       marker.lng user.longitude
+      marker.infowindow user.attack_type
     end
   end
 
@@ -73,6 +74,6 @@ class LocationsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def location_params
-      params.require(:location).permit(:address, :longitude, :latitude)
+      params.require(:location).permit(:address, :longitude, :latitude, :attack_type)
     end
 end

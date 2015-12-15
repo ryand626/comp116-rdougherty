@@ -715,7 +715,7 @@ def draw_description(i)
   		puts Dir.pwd + "/../geoTest/geoCoder/geotesting/app/IPlogs/" + @Exploits[i].name + ".log"
   		File.open(Dir.pwd + "/../geoTest/geoCoder/geotesting/app/IPlogs/" + @Exploits[i].name + ".log", 'w') {|f| 
   			@Exploits[i].Instances.each do |instance|
-  				f.write(instance.IP + "\n") 
+  				f.write(instance.IP + "," + @Exploits[i].name + "\n") 
   			end
   		}
   	end
