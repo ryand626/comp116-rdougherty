@@ -18,11 +18,8 @@ SHADE_FACTOR = 25
 
 # ============= Variables ============= 
 attr_accessor :Frames, :TimeFrame, :BreakdownFrame, :ThreatFrame, :ScrollArea
-attr_accessor :IPFrame, :DescriptionFrame, :MitigationFrame, :AttackFrame
+attr_accessor :IPFrame, :DescriptionFrame, :MitigationFrame, :AttackFrame, :WriteToFileButton
 attr_accessor :ExploitNames, :Exploits
-attr_accessor :lorem_ipsum
-
-@lorem_ipsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
 
 # ---- FROM ALARM -----
 $incident_number = 0;
@@ -86,6 +83,10 @@ class TextFrame
 		@c = [100, 100, 100]
 	end
 
+	def IsMouseInside
+		return mouse_x < x + w && mouse_x > x && mouse_y > y && mouse_y < y + h
+	end
+
 	def render
 		fill(color(*c))
 		rect(x,y,w,h)
@@ -147,7 +148,7 @@ class ScrollableRegion
 		end
 
 		if @IsScrolling
-			@ContentFrame.y = @original_content_y + @original_mouse_y - mouse_y
+			@ContentFrame.y = @original_content_y + mouse_y - @original_mouse_y
 		else
 			if @ContentFrame.y > 0 
 				@ContentFrame.y = lerp @ContentFrame.y, 0, 0.5
@@ -518,6 +519,12 @@ def setup
   		@BreakdownFrame.w - 2 * PADDING,
   		@BreakdownFrame.h / 3 - 4.0 * PADDING / 3)
 
+  	@WriteToFileButton = TextFrame.new("Write to File", 
+  		@AttackFrame.x+@AttackFrame.w - 100,
+  		@AttackFrame.y,
+  		100,
+  		25)
+
   	@IPFrame = ScrollableRegion.new(
   		@BreakdownFrame.x + 2 * PADDING,
   		@BreakdownFrame.y + 6 * PADDING + 2 * (@BreakdownFrame.h / 3 - 4.0 * PADDING / 3),
@@ -547,26 +554,27 @@ def setup
 		"NULL sends a TCP packet with everything in the header set to NULL, and then waits for a response to probe your machine and see what it can figure out about your connections.", 
 		"FIN sends a TCP packet with the FIN flag set to 1, then uses the response to see the vulnerabilities of your system", 
 		"XMAS Sets the FIN, PSH, and URG flags of a TCP packet header, \"lighting the packet up like a Christmas tree.\" Then uses the response to see the vulnerabilities of your system", 
-		"Nikto is an Open Source (GPL) web server scanner which performs comprehensive tests against web servers for multiple items, including over 6700 potentially dangerous files/programs, checks for outdated versions of over 1250 servers, and version specific problems on over 270 servers. It also checks for server configuration items such as the presence of multiple index files, HTTP server options, and will attempt to identify installed web servers and software. Scan items and plugins are frequently updated and can be automatically updated.", 
-		"Nmap (\"Network Mapper\") is a free and open source (license) utility for network discovery and security auditing. Many systems and network administrators also find it useful for tasks such as network inventory, managing service upgrade schedules, and monitoring host or service uptime. Nmap uses raw IP packets in novel ways to determine what hosts are available on the network, what services (application name and version) those hosts are offering, what operating systems (and OS versions) they are running, what type of packet filters/firewalls are in use, and dozens of other characteristics. It was designed to rapidly scan large networks, but works fine against single hosts. Nmap runs on all major computer operating systems, and official binary packages are available for Linux, Windows, and Mac OS X. In addition to the classic command-line Nmap executable, the Nmap suite includes an advanced GUI and results viewer (Zenmap), a flexible data transfer, redirection, and debugging tool (Ncat), a utility for comparing scan results (Ndiff), and a packet generation and response analysis tool (Nping).", 
+		"Nikto is an Open Source web server scanner which performs comprehensive tests against web servers for multiple items, including over 6700 potentially dangerous files/programs, checks for outdated versions of over 1250 servers, and version specific problems on over 270 servers. It also checks for server configuration items such as the presence of multiple index files, HTTP server options", 
+		"Nmap (\"Network Mapper\") is a free and open source utility for network discovery and security auditing. Nmap uses raw IP packets in novel ways to determine what hosts are available on the network, what services (application name and version) those hosts are offering, what operating systems (and OS versions) they are running, what type of packet filters/firewalls are in use, and dozens of other characteristics.", 
 		"Credit Card information is encoded with basic patterning for different credit card companies.  By using unencrypted transmissions, it is easy for an attacker to see when you are sending out a number associated with a credit card.", 
 		"Shell Shock allows the user to execute arbitrary bash scripts on your machine.  This gives them potentially full access to your computer.", 
 		"phpMyAdmin is an administrative tool used for managing MySQL as it relates to a server.  However, there are many system exploits that can be done with phpMyAdmin.", 
-		"Rob Graham's Masscan This is the fastest Internet port scanner. It can scan the entire Internet in under 6 minutes, transmitting 10 million packets per second. It produces results similar to nmap, the most famous port scanner. Internally, it operates more like scanrand, unicornscan, and ZMap, using asynchronous transmission. The major difference is that it's faster than these other scanners. In addition, it's more flexible, allowing arbitrary address ranges and port ranges.", 
+		"Rob Graham's Masscan is the fastest Internet port scanner. It can scan the entire Internet in under 6 minutes, transmitting 10 million packets per second. It produces results similar to nmap.  The major difference is that it's faster than these other scanners. In addition, it's more flexible, allowing arbitrary address ranges and port ranges.", 
 		"Shell code is computer code designed to run on a terminal program that can execute arbitrary functions on your computer.  Compiled shellcode is in hexadecimal format and can be searched for by looking for the \\x character"
 	]
+	# https://capec.mitre.org
 	@ExploitMitigations = 
 	[
-		"NULL", 
-		"FIN", 
-		"XMAS", 
-		"nikto", 
-		"NMAP", 
-		"Credit Card", 
-		"Shell Shock", 
-		"PHP", 
-		"masscan", 
-		"Shell code"
+		"NULL scans can be mitigating by recognizing IP's attempting to send malformed TCP packets and blocking them. As a safety measure, configure your router to close any incoming and outgoing ports that are not in use. Disable all incoming ports if you do not need to connect to your computer remotely.", 
+		"FIN scans can be mitigating by recognizing IP's attempting to send malformed TCP packets and blocking them. As a safety measure, configure your router to close any incoming and outgoing ports that are not in use. Disable all incoming ports if you do not need to connect to your computer remotely.", 
+		"XMAS scans can be mitigating by recognizing IP's attempting to send malformed TCP packets and blocking them. As a safety measure, configure your router to close any incoming and outgoing ports that are not in use. Disable all incoming ports if you do not need to connect to your computer remotely.", 
+		"Keep your server up to date.  Port scans can be mitigating by recognizing IP's attempting to send malformed TCP packets and blocking them. As a safety measure, configure your router to close any incoming and outgoing ports that are not in use. Disable all incoming ports if you do not need to connect to your computer remotely.",
+		"Keep your server up to date. Try running NMAP on yourself, and see how much information you can gain access to. Scans can be mitigating by recognizing IP's attempting to send malformed TCP packets and blocking them. As a safety measure, configure your router to close any incoming and outgoing ports that are not in use. Disable all incoming ports if you do not need to connect to your computer remotely.", 
+		"Keep credit card information you send and receive encrypted so that someone monitoring the plaintext of your server packets cannot decipher it.", 
+		"Perform input sanitation. Never trust user input to be formatted correctly, always assume it could be malicious.", 
+		"Do not allow override of global variables and do Not Trust Global Variables. Make sure that the server setting for PHP does not expose global variables. A software system should be reluctant to trust variables that have been initialized outside of its trust boundary. Ensure adequate checking is performed when relying on input from outside a trust boundary. Separate the presentation layer and the business logic layer. Use encapsulation when declaring your variables. Assume all input is malicious. Create a white list that defines all valid input to the software system based on the requirements specifications.", 
+		"Keep your server software up to date. Port scans can be mitigating by recognizing IP's attempting to send malformed TCP packets and blocking them. As a safety measure, configure your router to close any incoming and outgoing ports that are not in use. Disable all incoming ports if you do not need to connect to your computer remotely", 
+		"Use language APIs rather than relying on passing data to the operating system shell or command line.  Filter all incoming data to escape or remove characters or strings that can be potentially misinterpreted as operating system or shell commands. All application processes should be run with the minimal privileges required. Also, processes must shed privileges as soon as they no longer require them."
 	]
 	@ExploitColors = 
 	[
@@ -588,6 +596,7 @@ def setup
 		@Exploits << Exploit.new(e)
 	end
 	# Initialize objects
+	@Exploits[0].IsSelected = true
 	for i in 0..(@ExploitNames.length - 1)
 		@Exploits[i].description = @ExploitDescriptions[i]
 		@Exploits[i].mitigation = @ExploitMitigations[i]
@@ -689,7 +698,7 @@ def draw_description(i)
   		@DescriptionFrame.h - (3 * PADDING + textAscent + textDescent)).renderNoFillNoStroke
   	
   	text("Mitigation", @MitigationFrame.x + PADDING, @MitigationFrame.y + PADDING)
-  	TextFrame.new("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",#@lorem_ipsum,#@Exploits[i].mitigation, 
+  	TextFrame.new(@Exploits[i].mitigation, #"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
   		@MitigationFrame.x + 2 * PADDING, 
   		@MitigationFrame.y + textAscent + textDescent + 2 * PADDING,
   		@MitigationFrame.w - (3 * PADDING),
@@ -697,7 +706,12 @@ def draw_description(i)
 
   	text("Attack Information (from " + @Exploits[i].Instances.length.to_s + " " + @Exploits[i].name + " attacks)", @AttackFrame.x + PADDING, @AttackFrame.y + PADDING)
 
-  	if mouse_pressed? && @AttackFrame.IsMouseInside
+  	@WriteToFileButton.c = darken(@Exploits[i].Information_Frame.c)
+  	stroke(color(*@Exploits[i].Information_Frame.c))
+  	text_align(CENTER,CENTER)
+  	@WriteToFileButton.render
+
+  	if mouse_pressed? && @WriteToFileButton.IsMouseInside
   		puts Dir.pwd + "/../geoTest/geoCoder/geotesting/app/IPlogs/" + @Exploits[i].name + ".log"
   		File.open(Dir.pwd + "/../geoTest/geoCoder/geotesting/app/IPlogs/" + @Exploits[i].name + ".log", 'w') {|f| 
   			@Exploits[i].Instances.each do |instance|
@@ -735,8 +749,18 @@ def draw_breakdown
 				(1.0 * @Exploits[i].Instances.length / sum) * @TimeFrame.w, 
 				@TimeFrame.h)
 			@Exploits[i].FrequencyFrame.render
-
+			stroke_weight 1
+			
 			current_x += (1.0 * @Exploits[i].Instances.length / sum) * @TimeFrame.w
+		end
+		
+		for i in 0..(@Exploits.length - 1)
+			if @Exploits[i].IsSelected
+				stroke_weight 2
+				stroke color(255,255,100)
+				@Exploits[i].FrequencyFrame.render
+				stroke_weight 1
+			end
 		end
 
 		for i in 0..(@Exploits.length - 1)
